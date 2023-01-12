@@ -21,13 +21,11 @@ jobs:
 
       - name: 🚚 Move all output files into the same dir
         run: |
-          mkdir dist/
-          cp target/release/simple_rust_site dist/
-          cp -r public/ dist/
+          cp -r public/ target/release/
 
       - name: 📦 Publish artifact
         uses: actions/upload-artifact@v3
         with:
           name: SimpleReverseProxy
-          path: dist
+          path: target/release/
 
