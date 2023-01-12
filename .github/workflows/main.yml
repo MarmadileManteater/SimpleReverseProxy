@@ -19,9 +19,15 @@ jobs:
       - name: 🏗️ Build
         run: cargo build --release
 
+      - name: 🚚 Move all output files into the same dir
+        run: |
+          mkdir dist/
+          cp target/release/simple_rust_site dist/
+          cp public/ dist/
+
       - name: 📦 Publish artifact
         uses: actions/upload-artifact@v3
         with:
           name: SimpleReverseProxy
-          path: target/release/simple_rust_site
+          path: dist
 
