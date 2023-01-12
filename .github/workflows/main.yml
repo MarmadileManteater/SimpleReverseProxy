@@ -15,7 +15,9 @@ jobs:
         uses: actions/checkout@master
         with:
           persist-credentials: false
-
+      - name: 🤷‍♀️ Trying something out
+        run: |
+          sudo apt-get install -y pkg-config libssl-dev
       - name: 🏗️ Build
         run: cargo build --release
 
