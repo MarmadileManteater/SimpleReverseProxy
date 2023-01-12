@@ -22,6 +22,6 @@ jobs:
       - name: 📦 Publish artifact
         uses: actions/upload-artifact@v3
         with:
-          name: MarmadileManteaterAstroVue
+          name: SimpleReverseProxy
           path: target/release/simple_rust_site
 
