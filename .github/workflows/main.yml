@@ -1,0 +1,27 @@
+
+name: Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [development]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🛎️ Checkout 
+        uses: actions/checkout@master
+        with:
+          persist-credentials: false
+
+      - name: 🏗️ Build
+        run: cargo build --release
+
+      - name: 📦 Publish artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: MarmadileManteaterAstroVue
+          path: target/release/simple_rust_site
+
