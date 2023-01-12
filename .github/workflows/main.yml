@@ -21,7 +21,7 @@ jobs:
 
       - name: Install OpenSSL 1.1.1f
         run: |
-          sudo apt-get autoremove libssl-dev -y
+          sudo apt-get autoremove libssl-dev openssl -y
           # download binary openssl packages from Impish builds
           wget http://security.ubuntu.com/ubuntu/pool/main/o/openssl/openssl_1.1.1f-1ubuntu2.16_amd64.deb
           wget http://security.ubuntu.com/ubuntu/pool/main/o/openssl/libssl-dev_1.1.1f-1ubuntu2.16_amd64.deb
