@@ -23,7 +23,7 @@ jobs:
         run: |
           mkdir dist/
           cp target/release/simple_rust_site dist/
-          cp public/ dist/
+          cp -r public/ dist/
 
       - name: 📦 Publish artifact
         uses: actions/upload-artifact@v3
