@@ -24,7 +24,8 @@ jobs:
           persist-credentials: false
 
       - name: Check OpenSSL version
-        run: openssl version
+        run: echo "OPENSSL_VERSION=$(openssl version | grep -oP '\d+\.\d+\.\d+[a-z]*')" >> $GITHUB_OUTPUT
+        id: check_openssl
 
       - name: 🏗️ Build
         run: cargo build
@@ -38,6 +39,6 @@ jobs:
       - name: 📦 Publish artifact
         uses: actions/upload-artifact@v3
         with:
-          name: SimpleReverseProxy-${{ matrix.os }}
+          name: SimpleReverseProxy-${{ steps.check_openssl.outputs.OPENSSL_VERSION }}
           path: dist/
 
