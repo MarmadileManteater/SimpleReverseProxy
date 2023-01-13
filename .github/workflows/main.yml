@@ -24,7 +24,7 @@ jobs:
           persist-credentials: false
 
       - name: Check OpenSSL version
-        run: echo "OPENSSL_VERSION=$(openssl version | grep -oP '\d+\.\d+\.\d+[a-z]*')" >> $GITHUB_OUTPUT
+        run: echo "OPENSSL_VERSION=$(openssl version | grep -oP '\d+\.\d+\.\d+[a-z]*' | head -n 1)" >> $GITHUB_OUTPUT
         id: check_openssl
 
       - name: 🏗️ Build
