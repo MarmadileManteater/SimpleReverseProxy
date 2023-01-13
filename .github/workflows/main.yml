@@ -8,7 +8,14 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        os:
+          - ubuntu-18.04
+          - ubuntu-20.04
+          - ubuntu-22.04
+    
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: 🛎️ Checkout 
@@ -16,18 +23,6 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Install OpenSSL 1.1.1f
-        run: |
-          # download binary openssl packages from Impish builds
-          wget http://security.ubuntu.com/ubuntu/pool/main/o/openssl/openssl_1.1.1f-1ubuntu2.16_amd64.deb
-          wget http://security.ubuntu.com/ubuntu/pool/main/o/openssl/libssl-dev_1.1.1f-1ubuntu2.16_amd64.deb
-          wget http://security.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb
-
-          # install downloaded binary packages
-          yes | sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb
-          yes | sudo dpkg -i libssl-dev_1.1.1f-1ubuntu2.16_amd64.deb
-          yes | sudo dpkg -i openssl_1.1.1f-1ubuntu2.16_amd64.deb 
-    
       - name: Check OpenSSL version
         run: openssl version
 
