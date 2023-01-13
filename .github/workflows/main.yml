@@ -34,15 +34,10 @@ jobs:
           mkdir dist/
           cp target/debug/simple_rust_site dist/
           cp -r public/ dist/
-      
-      - name: 🤐 Zip up dist directory for 🏎faster uploads
-        uses: montudor/action-zip@v1
-        with:
-          args: zip -r dist.zip ./dist
-          
+
       - name: 📦 Publish artifact
         uses: actions/upload-artifact@v3
         with:
-          name: SimpleReverseProxy
-          path: dist.zip
+          name: SimpleReverseProxy-${{ matrix.os }}
+          path: dist/
 
