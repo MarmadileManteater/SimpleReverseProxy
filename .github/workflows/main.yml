@@ -39,6 +39,6 @@ jobs:
       - name: 📦 Publish artifact
         uses: actions/upload-artifact@v3
         with:
-          name: SimpleReverseProxy-${{ steps.check_openssl.outputs.OPENSSL_VERSION }}
+          name: SimpleReverseProxy-openssl${{ steps.check_openssl.outputs.OPENSSL_VERSION }}
           path: dist/
 
