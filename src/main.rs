@@ -145,6 +145,7 @@ pub async fn local_proxy(
       let client = Client::new();
       match client.get(&url).send().await {
         Ok(response) => {
+          let response_code = response.status().as_u16();
           let content_type = if response.headers().contains_key("content-type") {
             match response.headers()["content-type"].to_str() {
               Ok(str_content_type) => String::from(str_content_type),
@@ -155,7 +156,7 @@ pub async fn local_proxy(
           };
           match response.bytes().await {
             Ok(bytes) => {
-              HttpResponse::build(StatusCode::from_u16(200).unwrap()).insert_header(("content-type", content_type)).body(web::Bytes::from(bytes))
+              HttpResponse::build(StatusCode::from_u16(response_code).unwrap()).insert_header(("content-type", content_type)).body(web::Bytes::from(bytes))
             },
             Err(_) => {
               // TODO✍ add error logging
@@ -212,6 +213,9 @@ async fn main() -> std::io::Result<()> {
           App::new()
             .wrap(middleware::Compress::default())
             .service(web::resource("/{url:.*}").route(web::route().to(local_proxy)))
+            .wrap(
+              Cors::permissive()
+            )
       })
       .bind_rustls(format!("{}:{}", "0.0.0.0".to_string(), "443".to_string()), certs)?
       .run()
