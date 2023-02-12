@@ -44,3 +44,8 @@ _(Note: All filesystem URIs are use the `./public` folder as the root: `file://`
 ### ❗ Purpose
 
 I started by trying to host a sveltekit server, and the solution I found for securing my server was just to use a reverse proxy, so I wrote this using [a tutorial](https://prestonfrom.com/how_to_ssl.html) and [an example](https://github.com/actix/examples/blob/master/https-tls/rustls/src/main.rs#L45) for `actix-web`. This is also partially inspired by [estk/Soxy](https://github.com/estk/soxy).
+
+You can see an instance of this server running by visiting any of these subdomains:
+ - https://marmadilemanteater.dev
+ - https://qwik.marmadilemanteater.dev
+ - https://astro.marmadilemanteater.dev
