@@ -49,3 +49,7 @@ You can see an instance of this server running by visiting any of these subdomai
  - https://marmadilemanteater.dev
  - https://qwik.marmadilemanteater.dev
  - https://astro.marmadilemanteater.dev
+ 
+You can also see the GH action which deployed that server instance to linode [here](https://github.com/MarmadileManteater/my-linode-deployments/actions/workflows/marmadilemanteater-dev.yml):
+
+[![badge](https://github.com/MarmadileManteater/my-linode-deployments/actions/workflows/marmadilemanteater-dev.yml/badge.svg)](https://github.com/MarmadileManteater/my-linode-deployments/actions/workflows/marmadilemanteater-dev.yml)
