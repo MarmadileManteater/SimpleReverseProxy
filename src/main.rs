@@ -162,6 +162,11 @@ pub async fn local_proxy(
           } else {
             String::from("text/html")
           };
+          let mut builder = HttpResponse::build(StatusCode::from_u16(response_code).unwrap());
+          builder.insert_header(("content-type", content_type));
+          
+          builder.streaming(response.bytes_stream())
+          /*
           match response.bytes().await {
             Ok(bytes) => {
               HttpResponse::build(StatusCode::from_u16(response_code).unwrap()).insert_header(("content-type", content_type)).body(web::Bytes::from(bytes))
@@ -170,7 +175,7 @@ pub async fn local_proxy(
               // TODO✍ add error logging
               HttpResponse::build(StatusCode::from_u16(404).unwrap()).body("")
             }
-          }
+          } */
         },
         Err(_) => {
           // TODO✍ add error logging
