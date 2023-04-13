@@ -76,9 +76,9 @@ pub async fn local_proxy(
     default_maps
   };
   // The request URI
-  let uri = String::from(format!("{}", req.uri()));
+  let uri = String::from(format!("{}", req.connection_info().host()));
   // The request subdomain (defaults to '.')
-  let subdomain = match Regex::new(r#"https://([a-zA-Z]*?)\.[a-zA-Z]*?\."#).unwrap().captures(&uri) {
+  let subdomain = match Regex::new(r#"([a-zA-Z]*?)\.[a-zA-Z]*?\."#).unwrap().captures(&uri) {
     Some(result) => {
       match result.get(1) {
         Some(group) => group.as_str(),
@@ -143,6 +143,7 @@ pub async fn local_proxy(
       HttpResponse::build(StatusCode::from_u16(status_code).unwrap()).insert_header(("content-type", content_type)).body(web::Bytes::from(data))
     } else {
       let client = Client::new();
+      
       match client.get(&url).send().await {
         Ok(response) => {
           let response_code = response.status().as_u16();
@@ -218,6 +219,7 @@ async fn main() -> std::io::Result<()> {
             )
       })
       .bind_rustls(format!("{}:{}", "0.0.0.0".to_string(), "443".to_string()), certs)?
+      /* .bind(format!("{}:{}", "127.0.0.1".to_string(), "8085".to_string()))?*/
       .run()
       .await
   } else {
