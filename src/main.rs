@@ -1,4 +1,4 @@
-use actix_web::{middleware,App, HttpServer, web::{self}};
+use actix_web::{middleware,App, HttpServer, web::{self, Bytes}, http::header::{self}};
 use actix_cors::Cors;
 use rustls::PrivateKey;
 use rustls_pemfile::pkcs8_private_keys;
@@ -8,7 +8,7 @@ use std::fs::File;
 use std::io::BufReader;
 use rustls::ServerConfig;
 use actix_web::{HttpResponse, HttpRequest};
-use reqwest::Client;
+use reqwest::{Client, header::{HeaderMap, HeaderValue}};
 use actix_web::http::StatusCode;
 use std::env;
 use std::fs;
@@ -66,7 +66,8 @@ fn proxy_map_to_uri(proxy_map: ProxyMap) -> String {
 // Simple passthrough for subdomains listed in the passed proxymaps json
 pub async fn local_proxy(
   input_url: web::Path<String>,
-  req: HttpRequest
+  req: HttpRequest,
+  bytes: Bytes
 )  -> HttpResponse {
   let args: Vec<String> = env::args().collect();
   let default_maps = HashMap::new();
@@ -143,8 +144,14 @@ pub async fn local_proxy(
       HttpResponse::build(StatusCode::from_u16(status_code).unwrap()).insert_header(("content-type", content_type)).body(web::Bytes::from(data))
     } else {
       let client = Client::new();
+      let headers = HeaderMap::new();
+      let mut headers = HeaderMap::new();
       
-      match client.get(&url).send().await {
+      for (headerName, headerValue) in req.headers().into_iter() {
+        headers.insert(headerName, headerValue.into());
+      };
+
+      match client.request(req.method().into(), &url).body(bytes).headers(headers).send().await {
         Ok(response) => {
           let response_code = response.status().as_u16();
           let content_type = if response.headers().contains_key("content-type") {
