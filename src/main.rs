@@ -163,8 +163,11 @@ pub async fn local_proxy(
             String::from("text/html")
           };
           let mut builder = HttpResponse::build(StatusCode::from_u16(response_code).unwrap());
-          builder.insert_header(("content-type", content_type));
-          
+          for (headerName, headerValue) in response.headers() {
+            if (headerName != "content-length") {
+              builder.insert_header((headerName, headerValue.to_str().unwrap()));
+            }
+          }
           builder.streaming(response.bytes_stream())
           /*
           match response.bytes().await {
