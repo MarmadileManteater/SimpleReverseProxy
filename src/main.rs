@@ -1,4 +1,4 @@
-use actix_web::{middleware,App, HttpServer, web::{self, Bytes}, http::header::{self}};
+use actix_web::{middleware,App, HttpServer, web::{self, Bytes}};
 use actix_cors::Cors;
 use rustls::PrivateKey;
 use rustls_pemfile::pkcs8_private_keys;
@@ -8,7 +8,7 @@ use std::fs::File;
 use std::io::BufReader;
 use rustls::ServerConfig;
 use actix_web::{HttpResponse, HttpRequest};
-use reqwest::{Client, header::{HeaderMap, HeaderValue}};
+use reqwest::{Client, header::{HeaderMap}};
 use actix_web::http::StatusCode;
 use std::env;
 use std::fs;
@@ -144,41 +144,22 @@ pub async fn local_proxy(
       HttpResponse::build(StatusCode::from_u16(status_code).unwrap()).insert_header(("content-type", content_type)).body(web::Bytes::from(data))
     } else {
       let client = Client::new();
-      let headers = HeaderMap::new();
       let mut headers = HeaderMap::new();
       
-      for (headerName, headerValue) in req.headers().into_iter() {
-        headers.insert(headerName, headerValue.into());
+      for (header_name, header_value) in req.headers().into_iter() {
+        headers.insert(header_name, header_value.into());
       };
 
       match client.request(req.method().into(), &url).body(bytes).headers(headers).send().await {
         Ok(response) => {
           let response_code = response.status().as_u16();
-          let content_type = if response.headers().contains_key("content-type") {
-            match response.headers()["content-type"].to_str() {
-              Ok(str_content_type) => String::from(str_content_type),
-              Err(_) => String::from("text/html")
-            }
-          } else {
-            String::from("text/html")
-          };
           let mut builder = HttpResponse::build(StatusCode::from_u16(response_code).unwrap());
-          for (headerName, headerValue) in response.headers() {
-            if (headerName != "content-length") {
-              builder.insert_header((headerName, headerValue.to_str().unwrap()));
+          for (header_name, header_value) in response.headers() {
+            if header_name != "content-length" {
+              builder.insert_header((header_name, header_value.to_str().unwrap()));
             }
           }
           builder.streaming(response.bytes_stream())
-          /*
-          match response.bytes().await {
-            Ok(bytes) => {
-              HttpResponse::build(StatusCode::from_u16(response_code).unwrap()).insert_header(("content-type", content_type)).body(web::Bytes::from(bytes))
-            },
-            Err(_) => {
-              // TODO✍ add error logging
-              HttpResponse::build(StatusCode::from_u16(404).unwrap()).body("")
-            }
-          } */
         },
         Err(_) => {
           // TODO✍ add error logging
