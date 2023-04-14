@@ -155,9 +155,8 @@ pub async fn local_proxy(
           let response_code = response.status().as_u16();
           let mut builder = HttpResponse::build(StatusCode::from_u16(response_code).unwrap());
           for (header_name, header_value) in response.headers() {
-            if header_name != "content-length" {
-              builder.insert_header((header_name, header_value.to_str().unwrap()));
-            }
+            builder.insert_header((header_name, header_value.to_str().unwrap()));
+
           }
           builder.streaming(response.bytes_stream())
         },
