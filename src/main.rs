@@ -143,7 +143,15 @@ pub async fn local_proxy(
       };
       HttpResponse::build(StatusCode::from_u16(status_code).unwrap()).insert_header(("content-type", content_type)).body(web::Bytes::from(data))
     } else {
-      let client = Client::new();
+      let client = match Client::builder()
+        // we don't want reqwest to automatically handle our redirects
+        .redirect(reqwest::redirect::Policy::none())
+        .build() {
+          Ok(client) => client,
+          Err(error) => {
+            return HttpResponse::build(StatusCode::from_u16(500).unwrap()).content_type("application/json").body(format!("{{ \"error\": \"Failed to build reqwest client.\", \"message\": \"{:?}\" }}", error));
+          }
+        };
       let mut headers = HeaderMap::new();
       
       for (header_name, header_value) in req.headers().into_iter() {
