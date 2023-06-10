@@ -14,6 +14,7 @@ use std::env;
 use std::fs;
 use std::collections::HashMap;
 use regex::Regex;
+use std::str::FromStr;
 use serde::{Deserialize, Serialize};
 
 const DEFAULT_PORT : &str = "8080";
@@ -158,7 +159,9 @@ pub async fn local_proxy(
         headers.insert(header_name, header_value.into());
       };
 
-      match client.request(req.method().into(), &url).body(bytes).headers(headers).send().await {
+      
+      let url = format!("{}?{}", &url, req.query_string());
+      match client.request(req.method().into(), &url).body(bytes).send().await {
         Ok(response) => {
           let response_code = response.status().as_u16();
           let mut builder = HttpResponse::build(StatusCode::from_u16(response_code).unwrap());
@@ -214,6 +217,11 @@ async fn main() -> std::io::Result<()> {
   if args.len() > 2 {
     let path_to_cert = String::from(&args[1]);
     let path_to_private_key = String::from(&args[2]);
+    let num_of_workers = if args.len() > 3 {
+      i32::from_str(&args[3]).unwrap_or(1)
+    } else {
+      1
+    };
     let certs = load_certs(&path_to_cert, &path_to_private_key).unwrap();
       HttpServer::new(move || {
           App::new()
@@ -224,7 +232,7 @@ async fn main() -> std::io::Result<()> {
             )
       })
       .bind_rustls(format!("{}:{}", "0.0.0.0".to_string(), "443".to_string()), certs)?
-      /* .bind(format!("{}:{}", "127.0.0.1".to_string(), "8085".to_string()))?*/
+      .workers(num_of_workers as usize)
       .run()
       .await
   } else {

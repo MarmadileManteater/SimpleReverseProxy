@@ -37,8 +37,15 @@ _(Note: All filesystem URIs are use the `./public` folder as the root: `file://`
 
 ### ⚒ Usage
 
+#### Arguments
+
+1. Path to cert **(required)**
+2. Path to privkey **(required)**
+3. Path to proxy map _(defaults to serving `public/`)_
+4. Number of workers _(defaults to 1)_
+
 ```bash
-./simple_rust_server path_to_cert.pem path_to_privkey.pem path_to_proxy_map.json
+./simple_rust_server path_to_cert.pem path_to_privkey.pem path_to_proxy_map.json 1
 ```
 
 ### ❗ Purpose
