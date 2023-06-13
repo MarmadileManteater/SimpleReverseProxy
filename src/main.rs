@@ -173,9 +173,8 @@ pub async fn local_proxy(
           }
           builder.streaming(response.bytes_stream())
         },
-        Err(_) => {
-          // TODO✍ add error logging
-          HttpResponse::build(StatusCode::from_u16(404).unwrap()).body("")
+        Err(error) => {
+          HttpResponse::build(StatusCode::from_u16(500).unwrap()).content_type("application/json").body(format!("{{ \"type\": \"error\", \"message\": \"Fatal error when connecting to server {}\", \"inner_error\": \"{}\" }}", service_url, format!("{:?}", error).replace("\"", "\\\"")))
         }
       }
     }
