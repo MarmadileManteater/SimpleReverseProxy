@@ -16,6 +16,10 @@ use std::collections::HashMap;
 use regex::Regex;
 use std::str::FromStr;
 use serde::{Deserialize, Serialize};
+use mimalloc::MiMalloc;
+
+#[global_allocator]
+static GLOBAL: MiMalloc = MiMalloc;
 
 const DEFAULT_PORT : &str = "8080";
 const DEFAULT_DIRECTORY : &str = "public";
